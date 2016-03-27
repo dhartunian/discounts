@@ -24,7 +24,9 @@ type ProductDatabase = Map Int Product
 type DiscountDatabase = Map Int Discount
 
 type Cost = Int
-data UndefinedCost = ProductDoesNotExist deriving (Eq, Show)
+data UndefinedCost =
+  UnableToComputeCost
+  | ProductDoesNotExist deriving (Eq, Show)
 
 -- computes cost of an item given a product db in cents
 itemCost :: ProductDatabase -> LineItem -> Either UndefinedCost Cost
@@ -32,3 +34,6 @@ itemCost db (LineItem pid quantity) =
   case Data.Map.lookup pid db of
     Just (Product _ cost) -> Right (cost * quantity)
     Nothing -> Left ProductDoesNotExist
+
+discountedItemCost :: ProductDatabase -> Discount -> LineItem -> Either UndefinedCost Cost
+discountedItemCost _ _ _ = Left UnableToComputeCost
