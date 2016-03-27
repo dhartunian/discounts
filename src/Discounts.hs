@@ -37,13 +37,13 @@ itemCost db (LineItem pid quantity) =
 
 -- computes cost of an item with discounts applied
 discountedItemCost :: ProductDatabase -> Discount -> LineItem -> Either UndefinedCost Cost
-discountedItemCost pdb discount li@(LineItem pid quantity)  =
+discountedItemCost pdb discount li =
   case itemCost pdb li of
-    Right cost -> Right cost --TODO: finish
+    Right cost -> Right (applyDiscountToCost li discount cost)
     Left error -> Left error
 
 -- applies discount percentage to cost and rounds down result
-applyDiscount :: Int -> Int -> Int
+applyDiscount :: Cost -> Int -> Cost
 applyDiscount cost discount = (cost * discount) `div` 100
 
 -- decides whether to apply the given discount to the given line item
@@ -56,9 +56,9 @@ appliesToProduct :: LineItem -> Discount -> Bool
 appliesToProduct _ (Discount _ All _) = True
 appliesToProduct (LineItem pid _) (Discount _ (Some list) _) = elem pid list
 
-applyDiscountsToCost :: Cost -> LineItem -> DiscountDatabase -> Cost
-applyDiscountsToCost cost li ddb =
-  Prelude.foldr (applyDiscount . discountPercentage) cost applicableDiscounts
-  where
-    applicableDiscounts = Prelude.filter discountFilter (elems ddb)
-    discountFilter discount = (appliesToProduct li discount) && (appliesToQuantity li discount)
+applyDiscountToCost :: LineItem -> Discount -> Cost -> Cost
+applyDiscountToCost li discount =
+  if (appliesToProduct li discount) && (appliesToQuantity li discount) then
+    applyDiscount $ discountPercentage discount
+  else
+    id
