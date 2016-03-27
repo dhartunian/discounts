@@ -1,6 +1,7 @@
 module Discounts where
 
 import Data.Text
+import Data.Map
 
 data LineItem = LineItem { lineItemProductId :: Int
                          , lineItemQuantity :: Int }
@@ -19,5 +20,9 @@ data Discount = Discount { discountPercentage :: Int
 data Product = Product { productName :: Text
                        , productPrice :: Int }
 
-discount :: Int
-discount = 0
+type ProductDatabase = Map Int Product
+type DiscountDatabase = Map Int Discount
+
+-- computes cost of an item given a product db in cents
+itemCost :: ProductDatabase -> LineItem -> Int
+itemCost _ _ = 0

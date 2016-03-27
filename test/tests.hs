@@ -25,5 +25,6 @@ productDb = Data.Map.fromList [ (1, Product (pack "Black Jacobins") 2000)
 main :: IO ()
 main = hspec $ do
   describe "Discounts" $ do
-    it "has a discount that is 0" $ do
-      discount `shouldBe` 0
+    describe "itemCost" $ do
+      it "multiplies quantity of item with its cost to determine the total item cost" $ do
+        itemCost productDb (LineItem 1 2) `shouldBe` 4000
