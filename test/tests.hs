@@ -40,3 +40,9 @@ main = hspec $ do
       it "only applies a discount limited to product list to those products only" $ do
         discountedItemCost productDb (Discount 50 (Some [1]) Nothing) (LineItem 1 1) `shouldBe` Right 1000
         discountedItemCost productDb (Discount 50 (Some [1]) Nothing) (LineItem 2 1) `shouldBe` Right 1500
+    describe "applyDiscount" $ do
+      it "multiplies cost by percentage discount rounded down" $ do
+        applyDiscount 100 50 `shouldBe` 50
+        applyDiscount 5 50 `shouldBe` 2
+        applyDiscount 1 50 `shouldBe` 0
+        applyDiscount 75 22 `shouldBe` 16

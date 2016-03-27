@@ -35,5 +35,13 @@ itemCost db (LineItem pid quantity) =
     Just (Product _ cost) -> Right (cost * quantity)
     Nothing -> Left ProductDoesNotExist
 
+-- computes cost of an item with discounts applied
 discountedItemCost :: ProductDatabase -> Discount -> LineItem -> Either UndefinedCost Cost
-discountedItemCost _ _ _ = Left UnableToComputeCost
+discountedItemCost pdb discount li@(LineItem pid quantity)  =
+  case itemCost pdb li of
+    Right cost -> Right cost --TODO: finish
+    Left error -> Left error
+
+-- applies discount percentage to cost and rounds down result
+applyDiscount :: Int -> Int -> Int
+applyDiscount cost discount = (cost * discount) `div` 100
