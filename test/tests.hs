@@ -27,4 +27,6 @@ main = hspec $ do
   describe "Discounts" $ do
     describe "itemCost" $ do
       it "multiplies quantity of item with its cost to determine the total item cost" $ do
-        itemCost productDb (LineItem 1 2) `shouldBe` 4000
+        itemCost productDb (LineItem 1 2) `shouldBe` Right 4000
+      it "has an undefined cost if product does not exist" $ do
+        itemCost productDb (LineItem 3 2) `shouldBe` Left ProductDoesNotExist
