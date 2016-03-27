@@ -45,3 +45,8 @@ discountedItemCost pdb discount li@(LineItem pid quantity)  =
 -- applies discount percentage to cost and rounds down result
 applyDiscount :: Int -> Int -> Int
 applyDiscount cost discount = (cost * discount) `div` 100
+
+-- decides whether to apply the given discount to the given line item
+appliesToQuantity :: LineItem -> Discount -> Bool
+appliesToQuantity _ (Discount _ _ Nothing) = True
+appliesToQuantity (LineItem _ quantity) (Discount _ _ (Just limit)) = quantity <= limit

@@ -46,3 +46,11 @@ main = hspec $ do
         applyDiscount 5 50 `shouldBe` 2
         applyDiscount 1 50 `shouldBe` 0
         applyDiscount 75 22 `shouldBe` 16
+    describe "appliesToQuantity" $ do
+      it "returns true when the discount applies to all items and has no limit" $ do
+        appliesToQuantity (LineItem 10 10000) (Discount 22 All Nothing) `shouldBe` True
+      it "returns false when the discount is limited to n items and we have more" $ do
+        appliesToQuantity (LineItem 10 11) (Discount 22 All (Just 10)) `shouldBe` False
+      it "returns true when the discount is limited to n items and we have fewer or equal" $ do
+        appliesToQuantity (LineItem 10 10) (Discount 22 All (Just 10)) `shouldBe` True
+        appliesToQuantity (LineItem 10 8) (Discount 22 All (Just 10)) `shouldBe` True
