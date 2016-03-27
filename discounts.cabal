@@ -19,7 +19,7 @@ library
   exposed-modules:     Discounts
   -- other-modules:       
   -- other-extensions:    
-  build-depends:       base >=4.8 && <4.9
+  build-depends:       base >=4.8 && <4.9, containers, text
   hs-source-dirs:      src
   default-language:    Haskell2010
   ghc-options:         -Wall -fwarn-tabs
@@ -29,5 +29,5 @@ test-suite tests
   type: exitcode-stdio-1.0
   main-is: tests.hs
   hs-source-dirs: test
-  build-depends: base, hspec, discounts
+  build-depends: base, hspec, discounts, containers, text
   default-language: Haskell2010
