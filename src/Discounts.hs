@@ -50,3 +50,15 @@ applyDiscount cost discount = (cost * discount) `div` 100
 appliesToQuantity :: LineItem -> Discount -> Bool
 appliesToQuantity _ (Discount _ _ Nothing) = True
 appliesToQuantity (LineItem _ quantity) (Discount _ _ (Just limit)) = quantity <= limit
+
+-- decides whether to apply the given discount to the given product id
+appliesToProduct :: LineItem -> Discount -> Bool
+appliesToProduct _ (Discount _ All _) = True
+appliesToProduct (LineItem pid _) (Discount _ (Some list) _) = elem pid list
+
+applyDiscountsToCost :: Cost -> LineItem -> DiscountDatabase -> Cost
+applyDiscountsToCost cost li ddb =
+  Prelude.foldr (applyDiscount . discountPercentage) cost applicableDiscounts
+  where
+    applicableDiscounts = Prelude.filter discountFilter (elems ddb)
+    discountFilter discount = (appliesToProduct li discount) && (appliesToQuantity li discount)
