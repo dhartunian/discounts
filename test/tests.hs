@@ -69,3 +69,8 @@ main = hspec $ do
         orderCost productDb discountDb (Order [(LineItem 1 1), (LineItem 2 1)] Nothing) `shouldBe` 1500 + 2000
       it "adds up the cost of all line items in the order" $ do
         orderCost productDb discountDb (Order [(LineItem 1 2), (LineItem 2 5)] Nothing) `shouldBe` (2 * 2000) + (5 * 1500)
+      it "applies a discount if one exists and applies to item" $ do
+        orderCost productDb discountDb sampleOrder2 `shouldBe` 1000
+        orderCost productDb discountDb (Order [LineItem 1 1] (Just 2)) `shouldBe` 1500
+        orderCost productDb discountDb (Order [LineItem 2 2] (Just 1)) `shouldBe` 3000
+        orderCost productDb discountDb (Order [LineItem 2 2] (Just 2)) `shouldBe` 3000
