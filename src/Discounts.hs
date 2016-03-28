@@ -65,5 +65,8 @@ applyDiscountToCost li discount =
     id
 
 orderCost :: ProductDatabase -> DiscountDatabase -> Order -> Cost
-orderCost pdb ddb (Order items _) =
-  Prelude.foldr (+) 0 $ rights $ Prelude.map (itemCost pdb) items
+orderCost pdb ddb (Order items maybeDiscount) =
+  Prelude.foldr (+) 0 $ rights $ Prelude.map (discountedItemCost pdb discount) items
+  where discount = case maybeDiscount >>= (flip Data.Map.lookup $ ddb) of
+          Just d -> d
+          Nothing -> (Discount 100 All Nothing)
