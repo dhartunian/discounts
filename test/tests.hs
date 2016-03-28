@@ -64,3 +64,8 @@ main = hspec $ do
       it "returns false if product is not in list" $ do
         appliesToProduct (LineItem 101 10) (Discount 12 (Some [1..100]) Nothing) `shouldBe` False
         appliesToProduct (LineItem 140 10) (Discount 12 (Some [1..100]) Nothing) `shouldBe` False
+    describe "orderCost" $ do
+      it "adds up the cost of all line items in the order" $ do
+        orderCost productDb discountDb (Order [(LineItem 1 1), (LineItem 2 1)] Nothing) `shouldBe` 1500 + 2000
+      it "adds up the cost of all line items in the order" $ do
+        orderCost productDb discountDb (Order [(LineItem 1 2), (LineItem 2 5)] Nothing) `shouldBe` (2 * 2000) + (5 * 1500)

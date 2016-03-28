@@ -62,3 +62,6 @@ applyDiscountToCost li discount =
     applyDiscount $ discountPercentage discount
   else
     id
+
+orderCost :: ProductDatabase -> DiscountDatabase -> Order -> Cost
+orderCost _ _ _ = 0
