@@ -40,7 +40,7 @@ discountedItemCost :: ProductDatabase -> Discount -> LineItem -> Either Undefine
 discountedItemCost pdb discount li =
   case itemCost pdb li of
     Right cost -> Right (applyDiscountToCost li discount cost)
-    Left error -> Left error
+    Left err -> Left err
 
 -- applies discount percentage to cost and rounds down result
 applyDiscount :: Cost -> Int -> Cost
