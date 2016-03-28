@@ -2,6 +2,7 @@ module Discounts where
 
 import Data.Text
 import Data.Map
+import Data.Either (rights)
 
 data LineItem = LineItem { lineItemProductId :: Int
                          , lineItemQuantity :: Int }
@@ -64,4 +65,5 @@ applyDiscountToCost li discount =
     id
 
 orderCost :: ProductDatabase -> DiscountDatabase -> Order -> Cost
-orderCost _ _ _ = 0
+orderCost pdb ddb (Order items _) =
+  Prelude.foldr (+) 0 $ rights $ Prelude.map (itemCost pdb) items
