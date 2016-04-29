@@ -20,8 +20,7 @@ discountDb = Data.Map.fromList [ (1, Discount 50 All (Just 1))
 
 -- wrapped strings in pack to turn into Text
 productDb :: Map Int Product
-productDb = Data.Map.fromList [ (1, Product (pack "Black Jacobins") 2000)
-                              , (2, Product (pack "Shock Doctrine") 1500)]
+productDb = Data.Map.fromList [ (1, Product (pack "Black Jacobins") 2000) , (2, Product (pack "Shock Doctrine") 1500)]
 
 
 main :: IO ()
@@ -29,17 +28,17 @@ main = hspec $ do
   describe "Discounts" $ do
     describe "itemCost" $ do
       it "multiplies quantity of item with its cost to determine the total item cost" $ do
-        itemCost productDb (LineItem 1 2) `shouldBe` Right 4000
+        itemCost productDb (LineItem 1 2) `shouldBe` Just 4000
       it "has an undefined cost if product does not exist" $ do
-        itemCost productDb (LineItem 3 2) `shouldBe` Left ProductDoesNotExist
+        itemCost productDb (LineItem 3 2) `shouldBe` Nothing
     describe "discountedItemCost" $ do
       it "applies the discount as a percentage to the item cost rounded down" $ do
-        discountedItemCost productDb (Discount 50 All Nothing) (LineItem 2 1) `shouldBe` Right 750
+        discountedItemCost productDb (Discount 50 All Nothing) (LineItem 2 1) `shouldBe` Just 750
       it "does not apply the discount if we have too many and the discount is limited" $ do
-        discountedItemCost productDb (Discount 50 All (Just 1)) (LineItem 2 2) `shouldBe` Right 3000
+        discountedItemCost productDb (Discount 50 All (Just 1)) (LineItem 2 2) `shouldBe` Just 3000
       it "only applies a discount limited to product list to those products only" $ do
-        discountedItemCost productDb (Discount 50 (Some [1]) Nothing) (LineItem 1 1) `shouldBe` Right 1000
-        discountedItemCost productDb (Discount 50 (Some [1]) Nothing) (LineItem 2 1) `shouldBe` Right 1500
+        discountedItemCost productDb (Discount 50 (Some [1]) Nothing) (LineItem 1 1) `shouldBe` Just 1000
+        discountedItemCost productDb (Discount 50 (Some [1]) Nothing) (LineItem 2 1) `shouldBe` Just 1500
     describe "applyDiscount" $ do
       it "multiplies cost by percentage discount rounded down" $ do
         applyDiscount 100 50 `shouldBe` 50
